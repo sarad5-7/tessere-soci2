@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Scheda Socio</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+    header img { max-height: 80px; margin-bottom: 20px; }
+    .banda {
+      font-size: 28px;
+      font-weight: bold;
+      color: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 40px auto;
+      width: 80%;
+      max-width: 600px;
+    }
+    .attivo { background-color: green; }
+    .non-attivo { background-color: red; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logoperseidi.png" alt="Logo Associazione">
+</header>
+
+<div id="scheda"></div>
+
+<script>
+const soci = [
+  {id: "001", nome: "Mario", cognome: "Rossi", attivo: true},
+  {id: "002", nome: "Luca", cognome: "Bianchi", attivo: false},
+  {id: "003", nome: "Anna", cognome: "Verdi", attivo: true}
+];
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+const socio = soci.find(s => s.id === id);
+
+if (socio) {
+  const bandaClass = socio.attivo ? "attivo" : "non-attivo";
+  const statoTxt = socio.attivo ? "SEI ATTIVO" : "NON SEI ATTIVO";
+  document.getElementById("scheda").innerHTML = `
+    <h2>${socio.nome} ${socio.cognome} (ID: ${socio.id})</h2>
+    <div class="banda ${bandaClass}">${statoTxt}</div>
+  `;
+} else {
+  document.getElementById("scheda").innerHTML = "<p>Socio non trovato</p>";
+}
+</script>
+
+</body>
+</html>

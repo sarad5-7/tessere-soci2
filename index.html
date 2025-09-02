@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Elenco Soci</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+    header img { max-height: 80px; margin-bottom: 20px; }
+    table { margin: auto; border-collapse: collapse; width: 90%; max-width: 900px; }
+    th, td { border: 1px solid #ccc; padding: 10px; }
+    th { background: #f2f2f2; }
+    .qr { margin: auto; }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover { background: #0056b3; }
+  </style>
+</head>
+<body>
+
+<header>
+  <img src="logoperseidi.png" alt="Logo Associazione">
+  <h1>Elenco Soci</h1>
+</header>
+
+<div id="elenco"></div>
+
+<script>
+const soci = [
+  {id: "001", nome: "Mario", cognome: "Rossi", attivo: true},
+  {id: "002", nome: "Luca", cognome: "Bianchi", attivo: false},
+  {id: "003", nome: "Anna", cognome: "Verdi", attivo: true}
+];
+
+let html = "<table><tr><th>Nome</th><th>Cognome</th><th>Stato</th><th>QR</th><th>Scarica</th></tr>";
+soci.forEach(socio => {
+  const statoTxt = socio.attivo ? "Attivo" : "Non attivo";
+  const statoColor = socio.attivo ? "green" : "red";
+  const qrId = "qr" + socio.id;
+
+  html += `
+    <tr>
+      <td>${socio.nome}</td>
+      <td>${socio.cognome}</td>
+      <td style="color:${statoColor}; font-weight:bold">${statoTxt}</td>
+      <td><div id="${qrId}" class="qr"></div></td>
+      <td><button onclick="scaricaQR('${qrId}', '${socio.id}')">Scarica QR</button></td>
+    </tr>`;
+});
+html += "</table>";
+document.getElementById("elenco").innerHTML = html;
+
+// Genera i QR
+soci.forEach(socio => {
+  const base = window.location.href.split("index.html")[0];
+  const url = base + "scheda.html?id=" + socio.id;
+  new QRCode(document.getElementById("qr" + socio.id), {
+    text: url,
+    width: 100,
+    height: 100
+  });
+});
+
+// Scarica QR
+function scaricaQR(qrId, socioId) {
+  const qrImg = document.getElementById(qrId).querySelector("img");
+  if (qrImg) {
+    const link = document.createElement("a");
+    link.href = qrImg.src;
+    link.download = "QR_" + socioId + ".png";
+    link.click();
+  }
+}
+</script>
+
+</body>
+</html>
